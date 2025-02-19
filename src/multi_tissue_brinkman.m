@@ -203,16 +203,6 @@ for k=1:N*(N+1)
         A_v2y(k,k-(N+1))=-(cay2);
     end
 end
-%% sparse matrix & LU decomposition for better performance
-%A_v2y=sparse(A_v2y);
-%A_v1y=sparse(A_v1y);
-%A_v2x=sparse(A_v2x);
-%A_v1x=sparse(A_v1x);
-
-%[L2y,U2y,P2y]=lu(A_v2y);
-%[L2x,U2x,P2x]=lu(A_v2x);
-%[L1y,U1y,P1y]=lu(A_v1y);
-%[L1x,U1x,P1x]=lu(A_v1x);
 
 %% predefine some variables to use later: width of NT & PSM; injection rate with right units
 largpsm=size(1:floor(N/3)+1,2);
@@ -323,7 +313,7 @@ v2y=A_v2y\b2y;
         max(max(v1x(:,1),0)),max(max(v2x(:,1),0))]);
     lambday=4*max([max(max(-v1y(:,1),0)),max(max(-v2y(:,1),0)),...
         max(max(v1y(:,1),0)),max(max(v2y(:,1),0))]);
-    delta_t=min([delta_x^2/lambdax, delta_y^2/lambday, 0.8*(nmax./max([max(N1_sol(:,1)),max(N2_sol(:,1))])-1)/(max(max(G1(:),G2(:)))+(1/delta_x)*lambdax+(1/delta_y)*lambday)]);
+    delta_t=min([0.5*delta_x/lambdax, 0.5*delta_y/lambday, 0.8*(nmax./max([max(N1_sol(:,1)),max(N2_sol(:,1))])-1)/(max(max(G1(:),G2(:)))+(1/delta_x)*lambdax+(1/delta_y)*lambday)]);
     
     %% predefine some variables to use later multiple times
     rat=delta_t/delta_x;
