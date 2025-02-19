@@ -22,7 +22,7 @@ v2normy=[];
 
 %% plot pressure profile at final time
 P1(:)=B.e.*(C.N1(:,end)+C.N2(:,end))./...
-    (nmax-(C.N1(:,end)+C.N2(:,end)));
+    (B.nmax-(C.N1(:,end)+C.N2(:,end)));
 
 figure()
 surf(X,Y,reshape(P1(:,end),[B.N,B.N]));
