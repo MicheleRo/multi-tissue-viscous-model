@@ -204,15 +204,15 @@ for k=1:N*(N+1)
     end
 end
 %% sparse matrix & LU decomposition for better performance
-A_v2y=sparse(A_v2y);
-A_v1y=sparse(A_v1y);
-A_v2x=sparse(A_v2x);
-A_v1x=sparse(A_v1x);
+%A_v2y=sparse(A_v2y);
+%A_v1y=sparse(A_v1y);
+%A_v2x=sparse(A_v2x);
+%A_v1x=sparse(A_v1x);
 
-[L2y,U2y,P2y]=lu(A_v2y);
-[L2x,U2x,P2x]=lu(A_v2x);
-[L1y,U1y,P1y]=lu(A_v1y);
-[L1x,U1x,P1x]=lu(A_v1x);
+%[L2y,U2y,P2y]=lu(A_v2y);
+%[L2x,U2x,P2x]=lu(A_v2x);
+%[L1y,U1y,P1y]=lu(A_v1y);
+%[L1x,U1x,P1x]=lu(A_v1x);
 
 %% predefine some variables to use later: width of NT & PSM; injection rate with right units
 largpsm=size(1:floor(N/3)+1,2);
@@ -243,21 +243,42 @@ while(time<=Tmax)
         end
     end
 
-    %% compute right hand side of elliptic equations of the velocities with BC into account (no flux BC for the density)
-    b1x=-gradp1_x;
-    b2x=-gradp1_x;
-    b1x(mod(k,N+1)==1  ||  mod(k,N+1)==0)=0;
-    b2x(mod(k,N+1)==1  ||  mod(k,N+1)==0)=0;
-    b1y=-gradp1_y;
-    b2y=-gradp1_y;
-    b1y(mod(k,N+1)==1  || mod(k,N+1)==0)=0;
-    b2y(mod(k,N+1)==1  ||  mod(k,N+1)==0)=0;
+    %% compute right hand side of elliptic equations of the velocities with BC into account (homogeneous Dirichlet)
+b1x=zeros(N*(N+1),1);
+b2x=zeros(N*(N+1),1);
+b1y=zeros(N*(N+1),1);
+b2y=zeros(N*(N+1),1);
 
-    %% compute the velocities
-    v1x=U1x\(L1x\(P1x*b1x));
-    v1y=U1y\(L1y\(P1y*b1y));
-    v2x=U2x\(L2x\(P2x*b2x));
-    v2y=U2y\(L2y\(P2y*b2y));
+for k=1:N*(N+1)
+    if (mod(k,N+1)==1)
+        b1x(k)=0;
+        b2x(k)=0;
+    elseif mod(k,N+1)==0
+        b1x(k)=0;
+        b2x(k)=0;
+    else
+        b1x(k)=-gradp1_x(k);
+        b2x(k)=-gradp1_x(k);
+    end
+end
+
+for k=1:N*(N+1)
+    if (mod(k,N+1)==1)
+        b1y(k)=0;
+        b2y(k)=0;
+    elseif mod(k,N+1)==0
+        b1y(k)=0;
+        b2y(k)=0;
+    else
+        b1y(k)=-gradp1_y(k);
+        b2y(k)=-gradp1_y(k);
+    end
+end
+
+v1x=A_v1x\b1x;
+v1y=A_v1y\b1y;
+v2x=A_v2x\b2x;
+v2y=A_v2y\b2y;
 
     %% compute the fluxes in x and y for PSM & NT
     for i=1:N
