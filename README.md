@@ -12,10 +12,10 @@ With the parameter names replaced with their values (for example the parameters 
 The values of the parameters that can be tested to obtain the wild-type simulations :
 
 nmax_growth=0.9*nmax;  %maximal density for growth before stopping growth
-Tmax=20*60*60 %20h max simulation time in seconds
+Tmax=272000 %20h max simulation time in seconds
 beta1=0.2*10^5; %PSM viscosity
 beta2=0.3*10^5; %NT viscosity
-e=1; %pressure sensitivity
+e=3; %pressure sensitivity
 mu=10^(12); %friction
 g1=1/31500; %s^-1 psm growth rate
 g2=1/38988; %s^-1 nt growth rate
